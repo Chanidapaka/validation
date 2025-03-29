@@ -18,14 +18,17 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-//week 7
+//week 7 fileService
+//เป็นบริการสำหรับจัดการไฟล์
 @Service
 @Getter
 public class FileService {
-    private final Path fileStorageLocation;
+    private final Path fileStorageLocation; //จัดการที่อยู่จัดเก็บไฟล์
     private final FileStorageProperties fileStorageProperties;
 
     @Autowired
+    // ดึงค่าโฟลเดอร์จาก FileStorageProperties
+    // สร้างโฟลเดอร์ถ้ายังไม่มี
     public FileService(FileStorageProperties fileStorageProperties) {
         this.fileStorageProperties = fileStorageProperties;
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
@@ -40,20 +43,25 @@ public class FileService {
         }
     }
 
+    //รองรับการอัปโหลดไฟล์ (store())
+    // ตรวจสอบนามสกุลไฟล์ (isSupportedContentType)
+    // ลบอักขระพิเศษในชื่อไฟล์
+    // บันทึกไฟล์ลงโฟลเดอร์ โดยใช้ Files.copy()
     public String store(MultipartFile file) {
         if (!isSupportedContentType(file)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST
                     , "Does not support content type: " + file.getContentType());
         }
-//        Normalize file name
+        // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
-//            Check if the file 's name contains invalid characters
+
+        //Check if the file 's name contains invalid characters
             if (fileName.contains("..")) {
                 throw new RuntimeException("Sorry! Filename contains invalid path sequence " + fileName);
             }
-//            Copy file to the target location (Replacing existing file with the same name)
+        // Copy file to the target location
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
@@ -62,6 +70,7 @@ public class FileService {
         }
     }
 
+    //โหลดไฟล์เป็น Resource เพื่อให้ Spring สามารถให้บริการดาวน์โหลดไฟล์
     public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
@@ -77,6 +86,8 @@ public class FileService {
         }
     }
 
+    //เช็คประเภทไฟล์
+    //ใช้ Files.probeContentType() เพื่อตรวจสอบ MIME Type ของไฟล์
     public String getFileType(Resource resource) {
         try {
             String type = Files.probeContentType(resource.getFile().toPath());
@@ -86,6 +97,8 @@ public class FileService {
         }
     }
 
+    //ลบไฟล์
+    //ตรวจสอบว่าไฟล์มีอยู่ก่อน แล้วค่อยลบ
     public void removeFile(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
@@ -105,12 +118,16 @@ public class FileService {
         return supportFileTypes.contains(contentType);
     }
 
+    //รองรับการอัปโหลดหลายไฟล์
+    //วนลูปอัปโหลดไฟล์หลายไฟล์ในครั้งเดียว
     public List<String> store(List<MultipartFile> files) {
         List<String> fileNames = new ArrayList<>(files.size());
         files.forEach(file -> fileNames.add(store(file)));
         return fileNames;
     }
 
+    //ค้นหาไฟล์ตาม pattern
+    //ช้ Files.walkFileTree() ค้นหาไฟล์ตาม pattern เช่น "*.jpg"
     public List<String> getMatchedFiles(String pattern) {
         List<String> matchesList = new ArrayList<String>();
         FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {

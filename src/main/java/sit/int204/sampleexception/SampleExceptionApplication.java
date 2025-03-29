@@ -9,7 +9,10 @@ import sit.int204.sampleexception.utils.FileStorageProperties;
 import sit.int204.sampleexception.utils.ListMapper;
 
 @SpringBootApplication
+
+//week 7
 @EnableConfigurationProperties({FileStorageProperties.class})
+
 public class SampleExceptionApplication {
 
     public static void main(String[] args) {

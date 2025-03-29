@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// week 6 validation
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class MyErrorResponse {
     private final String instance;
     private Instant timestamp = Instant.now();
     private String stackTrace;
-    private List<ValidationError> errors;
+    private List<ValidationError> errors; //เอาไว้เก็บ error
 
     @Getter
     @Setter

@@ -3,6 +3,7 @@ package sit.int204.sampleexception.dtos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+//week 6 validation
 @Data
 public class SimpleEmployeeDto {
     private Integer employeeNumber;

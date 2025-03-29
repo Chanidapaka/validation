@@ -20,6 +20,8 @@ import sit.int204.sampleexception.exceptions.SimpleMyErrorResponseForApiDoc;
 import sit.int204.sampleexception.services.ProductService;
 import sit.int204.sampleexception.utils.ListMapper;
 
+// week 5 และ 6
+//Controller ที่จัดการ API สำหรับสินค้า
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -30,6 +32,7 @@ public class ProductController {
     @Autowired
     protected ListMapper listMapper;
 
+    //เพื่อให้ API มีเอกสารอธิบาย และรองรับการตอบกลับกรณีเกิดข้อผิดพลาด
     @Operation(summary = "Retrive product by id such as S10_5879")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -42,6 +45,8 @@ public class ProductController {
                     content = {
                             @Content(schema = @Schema(implementation = MyErrorResponse.class))})
     })
+
+    //ดึงข้อมูลสินค้าตาม id (เช่น S10_5879) และแปลงเป็น ProductDtoA
     @GetMapping("/{id}")
     public ResponseEntity<ProductDtoA> getProduct(@PathVariable String id) {
         return ResponseEntity.ok(
@@ -49,6 +54,7 @@ public class ProductController {
         );
     }
 
+    //ดึงรายการสินค้าทั้งหมดแบบแบ่งหน้า (pagination)
     @GetMapping("")
     public ResponseEntity<PageDto<ProductDtoA>> getAllProducts(
             @RequestParam Integer pageNo, @RequestParam Integer pageSize) {
@@ -57,10 +63,10 @@ public class ProductController {
                 productPage, ProductDtoA.class, modelMapper));
     }
 
+    //ใช้ ทดสอบการตรวจสอบข้อมูล (@Valid) เช่น ID, คะแนนสอบ, และวันเกิด
     @PostMapping("/validations")
     public ResponseEntity<Object> testValidation(
             @Valid @RequestBody SampleData sampleData) {
-
         return ResponseEntity.ok(sampleData);
     }
 }

@@ -3,12 +3,13 @@ package sit.int204.sampleexception.dtos;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+// week 7 fileService
 @Data
 public class NewCustomerDto {
     @NotNull
     @Min(900)
     private Integer id;
-    @NotEmpty
+    @NotEmpty //ห้ามว่าง
     @Size(min = 5, max = 50)
     private String customerName;
     @Size(min = 3, max = 50)

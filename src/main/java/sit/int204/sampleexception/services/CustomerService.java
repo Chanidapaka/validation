@@ -11,6 +11,7 @@ import sit.int204.sampleexception.repositories.CustomerRepository;
 
 import java.util.List;
 
+// week 6 validation
 @Service
 public class CustomerService {
     @Autowired

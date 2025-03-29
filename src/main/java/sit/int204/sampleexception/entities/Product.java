@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+//week 4
 @Getter
 @Setter
 @Entity

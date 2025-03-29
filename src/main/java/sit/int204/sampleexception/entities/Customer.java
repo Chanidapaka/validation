@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+//week 6 validation
 @Getter
 @Setter
 @Entity
